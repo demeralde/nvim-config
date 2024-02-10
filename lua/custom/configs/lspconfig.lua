@@ -25,3 +25,15 @@ lspconfig.tailwindcss.setup({
   root_dir = lspconfig.util.root_pattern('tailwind.config.js', 'package.json'),
   settings = {},
 })
+
+lspconfig.eslint.setup({
+  settings = {
+    packageManager = 'yarn'
+  },
+  on_attach = function(client, bufnr)
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      buffer = bufnr,
+      command = "EslintFixAll",
+    })
+  end,
+})
