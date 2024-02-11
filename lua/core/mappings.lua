@@ -74,6 +74,36 @@ M.general = {
   },
 }
 
+local function get_current_buffer_index(buffers, current_buf)
+  for i, buf in ipairs(buffers) do
+    if buf == current_buf then
+      return i
+    end
+  end
+end
+
+-- Function to get the next buffer
+local function get_next_buffer()
+  local buffers = vim.api.nvim_list_bufs()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local current_index = get_current_buffer_index(buffers, current_buf)
+
+  -- If the current buffer is the last in the list, wrap around to the first buffer
+  local next_index = current_index % #buffers + 1
+  return buffers[next_index]
+end
+
+-- Function to get the previous buffer
+local function get_previous_buffer()
+  local buffers = vim.api.nvim_list_bufs()
+  local current_buf = vim.api.nvim_get_current_buf()
+  local current_index = get_current_buffer_index(buffers, current_buf)
+
+  -- If the current buffer is the first in the list, wrap around to the last buffer
+  local prev_index = (current_index - 2) % #buffers + 1
+  return buffers[prev_index]
+end
+
 M.tabufline = {
   plugin = true,
 
@@ -81,22 +111,36 @@ M.tabufline = {
     -- cycle through buffers
     ["<tab>"] = {
       function()
-        require("nvchad.tabufline").tabuflineNext()
+        if get_next_buffer() then
+          require("nvchad.tabufline").tabuflineNext()
+        end
       end,
       "Goto next buffer",
     },
 
     ["<S-tab>"] = {
       function()
-        require("nvchad.tabufline").tabuflinePrev()
+        if get_previous_buffer() then
+          require("nvchad.tabufline").tabuflinePrev()
+        end
       end,
       "Goto prev buffer",
     },
 
     -- close buffer + hide terminal buffer
+    -- ["<leader>x"] = {
+    --   function()
+    --     require("nvchad.tabufline").close_buffer()
+    --   end,
+    --   "Close buffer",
+    -- },
     ["<leader>x"] = {
       function()
-        require("nvchad.tabufline").close_buffer()
+        if vim.api.nvim_buf_is_valid(vim.api.nvim_get_current_buf()) then
+          require("nvchad.tabufline").close_buffer()
+        else
+          print "Current buffer is not valid."
+        end
       end,
       "Close buffer",
     },
