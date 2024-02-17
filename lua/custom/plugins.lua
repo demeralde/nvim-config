@@ -1,4 +1,4 @@
-local overrides = require("custom.configs.overrides")
+local overrides = require "custom.configs.overrides"
 
 ---@type NvPluginSpec[]
 local plugins = {
@@ -25,7 +25,7 @@ local plugins = {
   -- override plugin configs
   {
     "williamboman/mason.nvim",
-    opts = overrides.mason
+    opts = overrides.mason,
   },
 
   {
@@ -60,6 +60,30 @@ local plugins = {
   --   "mg979/vim-visual-multi",
   --   lazy = false,
   -- }
+
+  -- Automatically close HTML and other tags:
+  {
+    "windwp/nvim-ts-autotag",
+    ft = {
+      "astro",
+      "glimmer",
+      "handlebars",
+      "html",
+      "javascript",
+      "javascriptreact",
+      "markdown",
+      "php",
+      "rescript",
+      "svelte",
+      "typescriptreact",
+      "typescript",
+      "vue",
+      "xml",
+    },
+    config = function()
+      require("nvim-ts-autotag").setup()
+    end,
+  },
 }
 
 return plugins
