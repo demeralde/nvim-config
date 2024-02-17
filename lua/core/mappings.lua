@@ -74,34 +74,54 @@ M.general = {
   },
 }
 
-local function get_current_buffer_index(buffers, current_buf)
-  for i, buf in ipairs(buffers) do
-    if buf == current_buf then
-      return i
-    end
-  end
+local function buffer_exists(bufnr)
+  -- Check if buffer is listed
+  return vim.api.nvim_buf_is_loaded(bufnr) and vim.api.nvim_buf_get_option(bufnr, "buflisted")
 end
 
--- Function to get the next buffer
+local function get_current_buffer_index(buffers, current_buf)
+  for index, buf in ipairs(buffers) do
+    if buf == current_buf then
+      return index
+    end
+  end
+  return nil -- Return nil if the current buffer is not found
+end
+
 local function get_next_buffer()
   local buffers = vim.api.nvim_list_bufs()
   local current_buf = vim.api.nvim_get_current_buf()
   local current_index = get_current_buffer_index(buffers, current_buf)
 
-  -- If the current buffer is the last in the list, wrap around to the first buffer
   local next_index = current_index % #buffers + 1
-  return buffers[next_index]
+  local next_buf = buffers[next_index]
+
+  while next_buf ~= current_buf do
+    if buffer_exists(next_buf) then
+      return next_buf
+    end
+
+    next_index = next_index % #buffers + 1
+    next_buf = buffers[next_index]
+  end
 end
 
--- Function to get the previous buffer
 local function get_previous_buffer()
   local buffers = vim.api.nvim_list_bufs()
   local current_buf = vim.api.nvim_get_current_buf()
   local current_index = get_current_buffer_index(buffers, current_buf)
 
-  -- If the current buffer is the first in the list, wrap around to the last buffer
   local prev_index = (current_index - 2) % #buffers + 1
-  return buffers[prev_index]
+  local prev_buf = buffers[prev_index]
+
+  while prev_buf ~= current_buf do
+    if buffer_exists(prev_buf) then
+      return prev_buf
+    end
+
+    prev_index = (prev_index - 2) % #buffers + 1
+    prev_buf = buffers[prev_index]
+  end
 end
 
 M.tabufline = {

@@ -15,7 +15,6 @@ local formatting_style = {
   fields = field_arrangement[cmp_style] or { "abbr", "kind", "menu" },
 
   format = function(_, item)
-    local tailwind_formatter = require("tailwindcss-colorizer-cmp").formatter
     local icons = require "nvchad.icons.lspkind"
     local icon = (cmp_ui.icons and icons[item.kind]) or ""
 
@@ -28,7 +27,7 @@ local formatting_style = {
       item.kind = string.format("%s %s", icon, cmp_ui.lspkind_text and item.kind or "")
     end
 
-    return tailwind_formatter(_, item)
+    return item
   end,
 }
 
@@ -111,7 +110,7 @@ local options = {
     { name = "buffer" },
     { name = "nvim_lua" },
     { name = "path" },
-    { name = 'tailwindcss' },
+    { name = "tailwindcss" },
   },
 }
 
