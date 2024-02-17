@@ -13,27 +13,21 @@ for _, lsp in ipairs(servers) do
   }
 end
 
--- 
+--
 -- lspconfig.pyright.setup { blabla}
 --
 
 -- Custom config
 
-lspconfig.tailwindcss.setup({
-  cmd = { 'tailwindcss-language-server', '--stdio' },
-  filetypes = { 'html', 'css', 'scss', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' },
-  root_dir = lspconfig.util.root_pattern('tailwind.config.js', 'package.json'),
+lspconfig.tailwindcss.setup {
+  cmd = { "tailwindcss-language-server", "--stdio" },
+  filetypes = { "html", "css", "scss", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue" },
+  root_dir = lspconfig.util.root_pattern("tailwind.config.js", "package.json"),
   settings = {},
-})
+}
 
-lspconfig.eslint.setup({
+lspconfig.eslint.setup {
   settings = {
-    packageManager = 'yarn'
+    packageManager = "yarn",
   },
-  on_attach = function(client, bufnr)
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      buffer = bufnr,
-      command = "EslintFixAll",
-    })
-  end,
-})
+}

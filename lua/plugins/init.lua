@@ -268,38 +268,41 @@ local default_plugins = {
   {
     "jose-elias-alvarez/null-ls.nvim",
     config = function(_, opts)
-      local null_ls = require("null-ls")
+      local null_ls = require "null-ls"
 
       local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
       local event = "BufWritePre" -- or "BufWritePost"
       local async = event == "BufWritePost"
 
-      null_ls.setup({
+      null_ls.setup {
         on_attach = function(client, bufnr)
-          if client.supports_method("textDocument/formatting") then
+          if client.supports_method "textDocument/formatting" then
             vim.keymap.set("n", "<Leader>f", function()
-              vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+              vim.lsp.buf.format { bufnr = vim.api.nvim_get_current_buf() }
             end, { buffer = bufnr, desc = "[lsp] format" })
 
             -- format on save
-            vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
+            vim.api.nvim_clear_autocmds { buffer = bufnr, group = group }
             vim.api.nvim_create_autocmd(event, {
               buffer = bufnr,
               group = group,
               callback = function()
-                vim.lsp.buf.format({ bufnr = bufnr, async = async })
+                -- Fix ESLint errors:
+                vim.cmd "EslintFixAll"
+                -- Format with Prettier:
+                vim.lsp.buf.format { bufnr = bufnr, async = async }
               end,
               desc = "[lsp] format on save",
             })
           end
 
-          if client.supports_method("textDocument/rangeFormatting") then
+          if client.supports_method "textDocument/rangeFormatting" then
             vim.keymap.set("x", "<Leader>f", function()
-              vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
+              vim.lsp.buf.format { bufnr = vim.api.nvim_get_current_buf() }
             end, { buffer = bufnr, desc = "[lsp] format" })
           end
         end,
-      })
+      }
     end,
   },
 
@@ -307,10 +310,10 @@ local default_plugins = {
     "MunifTanjim/prettier.nvim",
     lazy = false,
     config = function()
-      local prettier = require("prettier")
+      local prettier = require "prettier"
 
-      prettier.setup({
-        bin = 'prettierd',
+      prettier.setup {
+        bin = "prettierd",
         cli_options = {
           config_precedence = "prefer-file",
         },
@@ -328,24 +331,24 @@ local default_plugins = {
           "typescriptreact",
           "yaml",
         },
-      })
+      }
 
-      vim.cmd([[
+      vim.cmd [[
         augroup FormatAutogroup
           autocmd!
           autocmd BufWritePre *.js,*.jsx,*.json,*.md,*.html,*.css,*.scss,*.ts,*.tsx,*.yaml,*.yml,*.yaml,*.graphql :Prettier
         augroup END
-      ]])
+      ]]
     end,
   },
 
   {
     "roobert/tailwindcss-colorizer-cmp.nvim",
     config = function()
-      require("tailwindcss-colorizer-cmp").setup({
+      require("tailwindcss-colorizer-cmp").setup {
         color_square_width = 2,
-      })
-    end
+      }
+    end,
   },
 
   {
@@ -363,10 +366,10 @@ local default_plugins = {
     lazy = false,
     config = function()
       require("auto-session").setup {
-         log_level = "error",
-         auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/"},
+        log_level = "error",
+        auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
       }
-    end
+    end,
   },
 }
 
@@ -379,4 +382,3 @@ end
 require("lazy").setup(default_plugins, config.lazy_nvim)
 
 vim.g.auto_session_root_dir = "~/.config/nvim/sessions"
-
