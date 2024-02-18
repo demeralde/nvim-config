@@ -14,7 +14,7 @@ local formatting_style = {
   -- default fields order i.e completion word + item.kind + item.kind icons
   fields = field_arrangement[cmp_style] or { "abbr", "kind", "menu" },
 
-  format = function(_, item)
+  format = function(entry, item)
     local icons = require "nvchad.icons.lspkind"
     local icon = (cmp_ui.icons and icons[item.kind]) or ""
 
@@ -27,7 +27,7 @@ local formatting_style = {
       item.kind = string.format("%s %s", icon, cmp_ui.lspkind_text and item.kind or "")
     end
 
-    return item
+    return require("tailwindcss-colorizer-cmp").formatter(entry, item)
   end,
 }
 

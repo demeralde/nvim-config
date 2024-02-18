@@ -42,6 +42,11 @@ local default_plugins = {
         require("colorizer").attach_to_buffer(0)
       end, 0)
     end,
+    opts = {
+      user_default_options = {
+        tailwind = true,
+      },
+    },
   },
 
   {
@@ -143,6 +148,11 @@ local default_plugins = {
     config = function()
       require "plugins.configs.lspconfig"
     end,
+    opts = {
+      servers = {
+        tailwindcss = {},
+      },
+    },
   },
 
   -- load luasnips + cmp related in insert mode only
@@ -150,6 +160,8 @@ local default_plugins = {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {
+      { "roobert/tailwindcss-colorizer-cmp.nvim", config = true },
+
       {
         -- snippet plugin
         "L3MON4D3/LuaSnip",
@@ -287,8 +299,6 @@ local default_plugins = {
               buffer = bufnr,
               group = group,
               callback = function()
-                -- Fix ESLint errors:
-                vim.cmd "EslintFixAll"
                 -- Format with Prettier:
                 vim.lsp.buf.format { bufnr = bufnr, async = async }
               end,
